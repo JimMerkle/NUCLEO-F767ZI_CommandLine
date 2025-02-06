@@ -24,6 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "command_line.h"
+#include "FreeRTOSConfig.h" // getRunTimeCounterValue() and configureTimerForRunTimeStats()
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,6 +135,20 @@ int __io_putchar(int ch)
     return 1;
 }
 
+// vTaskGetRunTimeStats() requires the following two functions implemented
+// The STM32-F767ZI has a 32-bit timer for high resolution timing
+// Using TIM5 - 1us increments for xTaskGetTickCount(), to support vTaskGetRunTimeStats()
+unsigned long getRunTimeCounterValue(void)
+{
+    return TIM5->CNT; // read TIM5, 1us hardware timer
+}
+
+// "Reset" timer
+void configureTimerForRunTimeStats(void)
+{
+    return;
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -194,7 +210,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -523,6 +539,9 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
+  //char test[200] = {"This is a test\n"};
+  //HAL_UART_Transmit(&huart3, (uint8_t*)test, strlen(test), 10);
+
   // Init Command Line
   cl_setup();
 

@@ -34,7 +34,7 @@ const COMMAND_ITEM cmd_table[] = {
 //	{"sx",        "send xmodem <file>",                           1, cl_xmodem_send},
 //	{"rx",        "receive xmodem <file>",                        1, cl_xmodem_receive},
 	{"version",   "display firmware version",                     1, cl_version},
-//	FREERTOS_COMMANDS,  /* defined in cl_freertos.h */
+	FREERTOS_COMMANDS,  /* defined in cl_freertos.h */
 	{NULL,NULL,0,NULL}, /* end of table */
 };
 
@@ -201,13 +201,15 @@ int cl_add(void)
   return ret;
 }
 
+//#include "stm32f767xx.h" // defines UID_BASE and FLASHSIZE_BASE
+
 //Unique device ID register (96 bits)
 //Base address: 0x1FFFF7E8 (STM32-F103RB), or 0x1FF0F420 (STM32-F767ZI), or 0x1FFF7A10(STM32-F446RE)
 //TODO: Make the address selection determined at compile time or run time
 int cl_id(void)
 {
 #ifdef STM32F767xx
-	volatile uint8_t * p_id = (uint8_t *)0x1FF0F420; // STM32-F767ZI
+	volatile uint8_t * p_id = (uint8_t *)UID_BASE; // STM32-F767ZI
 #endif
 #ifdef STM32F103xB
 	volatile uint8_t * p_id = (uint8_t *)0x1FFFF7E8; // STM32-F103RB
@@ -224,6 +226,7 @@ int cl_id(void)
 	return 0;
 }
 
+
 //Memory size register
 //30.1.1 Flash size register
 //Base address: 0x1FFF F7E0
@@ -235,7 +238,7 @@ int cl_id(void)
 int cl_info(void)
 {
 #ifdef STM32F767xx
-	volatile uint16_t * p_k_bytes_flash = (uint16_t *)0xE0042000; // STM32-F767ZI
+	volatile uint16_t * p_k_bytes_flash = (uint16_t *)FLASHSIZE_BASE; // STM32-F767ZI
 #endif
 #ifdef STM32F103xB
 	volatile uint16_t * p_k_bytes_flash = (uint16_t *)0x1FFFF7E0; // STM32-F103RB

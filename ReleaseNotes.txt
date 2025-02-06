@@ -1,0 +1,9 @@
+0.2.0, 2/6/2025:
+  Add: getRunTimeCounterValue(void) and configureTimerForRunTimeStats() to main.c
+  Add: cl_freertos.c, cl_freertos.h
+  Add: command line commands: osinfo, oslist
+  Fix: 'info' command
+  
+0.1.0, 2/6/2025:
+  Initial code with DMA serial receive (UART3), FreeRTOS, TIM5 - 1us 32-bit timer
+  
